@@ -34,6 +34,7 @@ WEBSOCK_SERVICE_RECV_CALLBACK g_websockServiceRecv;
 WEBSOCK_SERVICE_DISCONNECT_CALLBACK g_websockServiceDisconnect;
 
 //---------------------------------------
+CRITICAL_SECTION g_wssCS;
 map<HANDLE,WebsockServiceUser> g_websockUserList;
 
 //---------------------------------------
@@ -47,23 +48,33 @@ void WINAPI WebsockNetRecvDataCallBack(HANDLE handle, int nLen, char* pData);
 //接收客户端的连接请求的回调函数
 void WINAPI WebsockNetAcceptCallBack(HANDLE handle, char *pszIP, WORD wPort)
 {
-	WebsockServiceUser tmp;
-	tmp.handle=handle;
-	strcpy_s(tmp.ip,pszIP);
-	tmp.port=wPort;
-	g_websockUserList.insert(make_pair(handle,tmp));
+	if(strlen(pszIP)>0)
+	{
+		EnterCriticalSection(&g_wssCS);
+
+		WebsockServiceUser tmp;
+		tmp.handle=handle;
+		strcpy_s(tmp.ip,pszIP);
+		tmp.port=wPort;
+		g_websockUserList.insert(make_pair(handle,tmp));
+
+		LeaveCriticalSection(&g_wssCS);
+	}
 }
 //断开客户端连接的回调函数
 void WINAPI WebsockNetDissconnectCallBack(HANDLE handle)
 {	
+	EnterCriticalSection(&g_wssCS);
 	map<HANDLE,WebsockServiceUser>::iterator it=g_websockUserList.find(handle);
 	g_websockUserList.erase(it);
 	g_websockServiceDisconnect(handle);
+	LeaveCriticalSection(&g_wssCS);
 }
 
 //接收到数据包时的回调函数
 void WINAPI WebsockNetRecvDataCallBack(HANDLE handle, int nLen, char* pData)
 {
+	EnterCriticalSection(&g_wssCS);
 	int ret;
 	char acceptBuf[512]={0};
 
@@ -102,6 +113,7 @@ void WINAPI WebsockNetRecvDataCallBack(HANDLE handle, int nLen, char* pData)
 			pws->recvLen-=totle;
 			memcpy_s(&pws->recvCache[0],WEBSOCK_CHCHE_SIZE,&pws->recvCache[totle],pws->recvLen);
 	}
+	LeaveCriticalSection(&g_wssCS);
 }
 
 DLLEXPORT_API BOOL WINAPI WebsockServiceInit(WEBSOCK_SERVICE_ACCEPT_CALLBACK pfnAcceptCallback, 
@@ -109,6 +121,8 @@ DLLEXPORT_API BOOL WINAPI WebsockServiceInit(WEBSOCK_SERVICE_ACCEPT_CALLBACK pfn
 											 WEBSOCK_SERVICE_DISCONNECT_CALLBACK pfnDisconnectCallback, 
 											WORD wPort)
 {
+	InitializeCriticalSection(&g_wssCS);
+
 	g_websockServiceAccept=pfnAcceptCallback;
 	g_websockServiceRecv=pfnRecvDataCallback;
 	g_websockServiceDisconnect=pfnDisconnectCallback;
@@ -118,6 +132,8 @@ DLLEXPORT_API BOOL WINAPI WebsockServiceInit(WEBSOCK_SERVICE_ACCEPT_CALLBACK pfn
 
 DLLEXPORT_API VOID WINAPI WebsockServiceDestory()
 {
+	DeleteCriticalSection(&g_wssCS);
+
 	g_websockServiceAccept=NULL;
 	g_websockServiceRecv=NULL;
 	g_websockServiceDisconnect=NULL;
