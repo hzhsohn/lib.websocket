@@ -161,13 +161,12 @@ BOOL WebsockNetDisconnect(HANDLE handle)
 	return TRUE;
 }
 
-
 BOOL WebsockNetSend(HANDLE handle, int nLen, char* pData)
 {
 	WebsockSockMgr* pSockMgr = GetSocketMgr(handle);
 	if(pSockMgr == NULL)
 		return FALSE;
-
+	
 	return pSockMgr->SendPacket(handle, nLen, pData);
 }
 

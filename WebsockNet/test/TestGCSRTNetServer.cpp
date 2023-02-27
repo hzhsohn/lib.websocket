@@ -84,7 +84,7 @@ void WINAPI RecvDataCallBack(HANDLE handle, int nLen, char* pData)
 	vector<HANDLE>::iterator it;
 	for(it=lstUser.begin();it!=lstUser.end();it++)
 	{
-		//返回到客户端
+		//返回到客户端--
 		WebsockServiceSend(*it,pData);
 	}
 }

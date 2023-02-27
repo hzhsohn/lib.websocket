@@ -15,16 +15,17 @@
     <RootNamespace>GCSRTNet</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>WebsockNet</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v110_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v110_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -105,9 +106,6 @@
     <ClCompile Include="websock\md5c.c" />
     <ClCompile Include="websock\sha1.c" />
     <ClCompile Include="websock\websocket.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="GCSRTNet.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\WebsockService.h" />

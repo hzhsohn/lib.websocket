@@ -108,10 +108,10 @@ void WINAPI WebsockNetRecvDataCallBack(HANDLE handle, int nLen, char* pData)
 			{
 					g_websockServiceRecv(handle,len,str);
 					//printf("传输数据来了totle=%d frame_begin=%d frame_len=%d len=%d %s\r\n",totle,frame_begin,frame_len,len,str);
+					//删除处理过后的数据
+					pws->recvLen-=totle;
+					memcpy_s(&pws->recvCache[0],WEBSOCK_CHCHE_SIZE,&pws->recvCache[totle],pws->recvLen);
 			}
-			//删除处理过后的数据
-			pws->recvLen-=totle;
-			memcpy_s(&pws->recvCache[0],WEBSOCK_CHCHE_SIZE,&pws->recvCache[totle],pws->recvLen);
 	}
 	LeaveCriticalSection(&g_wssCS);
 }

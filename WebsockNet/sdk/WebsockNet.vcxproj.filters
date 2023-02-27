@@ -50,11 +50,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GCSRTNet.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="h\MemMgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
