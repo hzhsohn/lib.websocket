@@ -131,8 +131,7 @@ function openConnection() {
             var message = JSON.parse(event.data);
             switch(message.cmd)
             {
-            case 0://获取在线人数,服务器连接上后自动给客户端
-                connected.innerHTML = "在线:"+message.online_count;
+            case 0://连接成功通知
                 statusBar.className = 'chat_success';
                 state.innerHTML = '<img src="image/index/chating.gif"/> 正常聊天状态';
                 //随机呢称

@@ -24,22 +24,17 @@ void WINAPI AcceptCallBack(HANDLE handle, char *pszIP, WORD wPort)
 
 	char str[1000]={0};
 
-	//发送新用户信息
-	sprintf(str,"{\"cmd\":0,\"online_count\":%d}",lstUser.size()+1);
+	//连接成功
+	sprintf(str,"{\"cmd\":0}");
 	WebsockServiceSend(handle, str);
 
-	for(int i=0;i<listBuf.size();i++)
-	{
-		sprintf(str,"%s",listBuf[i].c_str());
-		WebsockServiceSend(handle, str);
-	}
-	//发送旧用户新来了一个鸟人
+	lstUser.push_back(handle);
+	//通知新来了一个鸟人
 	for(int i=0;i<lstUser.size();i++)
 	{		
-		sprintf(str,"{\"cmd\":1,\"online_count\":%d}",lstUser.size()+1);
+		sprintf(str,"{\"cmd\":1,\"online_count\":%d}",lstUser.size());
 		WebsockServiceSend(lstUser[i], str);
 	}
-	lstUser.push_back(handle);
 }
 //断开客户端连接的回调函数
 void WINAPI DissconnectCallBack(HANDLE handle)
